@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from requests_oauthlib import OAuth1Session
 
-class CreateSession:
-    """Creating a session to the twitter account."""
+from requests_oauthlib import OAuth1
+import requests
+
+
+class CreateStreamer:
+    """Create streaming timeline."""
 
     def __init__(self,params={}):
         self.param_account = {
@@ -16,12 +19,14 @@ class CreateSession:
                 print("Error: Some parameter for login is None.")
                 exit(1)
 
-    def create_session(self):
-        session = OAuth1Session(
+    def create_streamer(self):
+        auth = OAuth1(
             self.param_account.get('CK'),
             self.param_account.get('CS'),
             self.param_account.get('AT'),
             self.param_account.get('AS')
-            )
-        return session
+        )
+        url="https://userstream.twitter.com/1.1/user.json"
+        streamer = requests.get(url,auth=auth,stream=True)
+        return streamer
 

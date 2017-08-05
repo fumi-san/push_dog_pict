@@ -5,5 +5,8 @@ access_token=ACCESS_TOKEN
 access_token_secret=ACCESS_TOKEN_SECRET
 
 [Connection]
+# use in api-base program
 get_timeline_delay = 70
 reconnect_time = 6
+# use in stream-base program
+reconnect_session=60
