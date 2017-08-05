@@ -9,4 +9,4 @@ access_token_secret=ACCESS_TOKEN_SECRET
 get_timeline_delay = 70
 reconnect_time = 6
 # use in stream-base program
-reconnect_session=60
+reconnect_streamer=600

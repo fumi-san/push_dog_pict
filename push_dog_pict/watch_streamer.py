@@ -1,6 +1,6 @@
 from create_streamer import CreateStreamer
 import configparser
-import time
+from datetime import datetime
 import json
 
 if __name__ == '__main__':
@@ -22,11 +22,15 @@ if __name__ == '__main__':
     if param_connect.get('reconnect_streamer') is None:
         param_connect['reconnect_streamer'] = 600
 
-    # get the newest timeline-id if exist
+    # create streamer
     streamer = CreateStreamer(param_account).create_streamer()
     if (streamer.status_code != 200):
         print("Err: http status is %s."%(res.status_code))
         exit(1)
+
+    # memorize create_conn date
+    tmp_time = datetime.now()
+
     # loop until killed
     for line in streamer.iter_lines():
         if(len(line) == 0):
@@ -44,4 +48,14 @@ if __name__ == '__main__':
             print('text found')
         else:
             print('text not found')
+        if (datetime.now() - tmp_time).total_seconds()\
+                > int(param_connect.get('reconnect_streamer')):
+            # create streamer
+            streamer = CreateStreamer(param_account).create_streamer()
+            if (streamer.status_code != 200):
+                print("Err: http status is %s."%(res.status_code))
+                exit(1)
+
+            # memorize create_conn date
+            tmp_time = datetime.now()
 
