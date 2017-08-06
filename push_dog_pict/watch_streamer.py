@@ -7,11 +7,19 @@ from pi_camera.exec_picamera import ExecPicamera
 import configparser
 from datetime import datetime
 import json
+import subprocess
 
-def post_message(msg='', pict_path=''):
+def post_photo(msg='', pict_path=''):
     session = CreateSession(param_account).create_session()
     TW = TweetPict(session)
     tweet = TW.tweet_pict(msg,pict_path)
+    if(tweet.status_code != 200):
+        print('Err: error while push photo:%s'%tweet.status_code)
+
+def post_movie(msg='', movie_path=''):
+    session = CreateSession(param_account).create_session()
+    TW = TweetPict(session)
+    tweet = TW.tweet_movie(msg,movie_path)
     if(tweet.status_code != 200):
         print('Err: error while push photo:%s'%tweet.status_code)
 
@@ -73,8 +81,8 @@ if __name__ == '__main__':
         if watch_flag:
             camera = ExecPicamera(camera_init,param_camera)
             filename = datetime.today().strftime("%Y%m%d_%H%M%S")
-            camera.take_pict(filename + '.jpg')
-            post_message(filename, filename + '.jpg')
+            camera.take_pict('photo/' + filename + '.jpg')
+            post_photo(filename, 'photo/' + filename + '.jpg')
 
         # check if there's words for movie
         watch_flag = False
@@ -86,9 +94,12 @@ if __name__ == '__main__':
         if watch_flag:
             camera = ExecPicamera(camera_init,param_camera)
             filename = datetime.today().strftime("%Y%m%d%_H%M%S")
-            camera.take_movie(filename + '.h264',
+            camera.take_movie('movie/' + filename + '.h264',
                         param_camera.get('movie_time'))
-            post_message(filename, filename + '.h264')
+            conv = subprocess.call(['/usr/bin/MP4Box', '-fps', '20',
+                       '-add', 'movie/' + filename + '.h264',
+                       'movie/' + filename + '.mp4'])
+            post_movie(filename, 'movie/' + filename + '.mp4')
 
         # refresh the connection if time is over.
         if (datetime.now() - tmp_time).total_seconds()\
