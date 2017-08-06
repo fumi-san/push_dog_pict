@@ -1,4 +1,4 @@
-from create_streamer import CreateStreamer
+from twitter_connect.create_streamer import CreateStreamer
 import configparser
 from datetime import datetime
 import json

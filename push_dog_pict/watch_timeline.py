@@ -1,7 +1,7 @@
-from create_session import CreateSession
+from twitter_connect.create_session import CreateSession
+from twitter_connect.get_timeline import GetTimeline
 import configparser
 import time
-from get_timeline import GetTimeline
 import json
 
 if __name__ == '__main__':
