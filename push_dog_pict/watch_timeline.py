@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from twitter_connect.create_session import CreateSession
 from twitter_connect.get_timeline import GetTimeline
 import configparser
@@ -32,7 +34,7 @@ if __name__ == '__main__':
     if (res.status_code != 200):
         print("Err: http status is %s."%(res.status_code))
         exit(1)
-    timeline = json.loads(res.text)
+    timeline = json.loads(res.text.decode('utf-8'))
     if len(timeline) == 1:
         tmp_since_id = timeline[0].get('id')
     if len(timeline) != 1 or tmp_since_id is None:
@@ -51,7 +53,7 @@ if __name__ == '__main__':
             if (res.status_code != 200):
                 print("Err: http status is %s."%(res.status_code))
                 exit(1)
-            timeline = json.loads(res.text)
+            timeline = json.loads(res.text.decode('utf-8'))
             watch_flag = False
             if(len(timeline)) != 0:
                 tmp_status_code = timeline[0].get('id')

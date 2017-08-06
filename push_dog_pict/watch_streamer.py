@@ -1,14 +1,16 @@
+# -*- coding: utf-8 -*-
+
 from twitter_connect.create_streamer import CreateStreamer
 from twitter_connect.tweet_pict import TweetPict
 from twitter_connect.create_session import CreateSession
-from picamera.exec_picamera import ExecPicamera
+from pi_camera.exec_picamera import ExecPicamera
 import configparser
 from datetime import datetime
 import json
 
 def post_message(msg='', pict_path=''):
     session = CreateSession(param_account).create_session()
-    TW = TweetPict(session, msg)
+    TW = TweetPict(session)
     tweet = TW.tweet_pict(msg,pict_path)
     if(tweet.status_code != 200):
         print('Err: error while push photo:%s'%tweet.status_code)
@@ -39,6 +41,10 @@ if __name__ == '__main__':
     if param_connect.get('reconnect_streamer') is None:
         param_connect['reconnect_streamer'] = 600
 
+    # create camera
+    import picamera
+    camera_init = picamera.PiCamera()
+
     # create streamer
     streamer = CreateStreamer(param_account).create_streamer()
     if (streamer.status_code != 200):
@@ -52,7 +58,7 @@ if __name__ == '__main__':
     for line in streamer.iter_lines():
         if(len(line) == 0):
             continue
-        timeline = json.loads(line)
+        timeline = json.loads(line.decode('utf-8'))
         text = timeline.get('text')
         if text is None:
             continue
@@ -65,7 +71,7 @@ if __name__ == '__main__':
                 break
         # taking a picture if some words exist.
         if watch_flag:
-            camera = ExecPicamera(param_camera)
+            camera = ExecPicamera(camera_init,param_camera)
             filename = datetime.today().strftime("%Y%m%d_%H%M%S")
             camera.take_pict(filename + '.jpg')
             post_message(filename, filename + '.jpg')
@@ -76,9 +82,9 @@ if __name__ == '__main__':
             if w in text:
                 watch_flag = True
                 break
-        # taking a picture if some words exist.
+        # taking a movie if some words exist.
         if watch_flag:
-            camera = ExecPicamera(param_camera)
+            camera = ExecPicamera(camera_init,param_camera)
             filename = datetime.today().strftime("%Y%m%d%_H%M%S")
             camera.take_movie(filename + '.h264',
                         param_camera.get('movie_time'))
