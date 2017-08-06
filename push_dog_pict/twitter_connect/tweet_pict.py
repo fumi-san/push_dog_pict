@@ -4,7 +4,7 @@ import json
 class TweetPict:
     """Getting Timeline using the session."""
 
-    def __init__(self, session, msg="", pict_path=""):
+    def __init__(self, session):
         self.session = session
         self.params = {}
 

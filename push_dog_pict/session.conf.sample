@@ -10,3 +10,8 @@ get_timeline_delay = 70
 reconnect_time = 6
 # use in stream-base program
 reconnect_streamer=600
+
+[CameraSettings]
+movie_time = 10
+resolution_x = 640
+resolution_y = 480
