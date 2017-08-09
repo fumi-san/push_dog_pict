@@ -83,6 +83,7 @@ if __name__ == '__main__':
             filename = datetime.today().strftime("%Y%m%d_%H%M%S")
             camera.take_pict('photo/' + filename + '.jpg')
             post_photo(filename, 'photo/' + filename + '.jpg')
+            rm = subprocess.call(['rm', 'photo/' + filename + '.jpg'])
 
         # check if there's words for movie
         watch_flag = False
@@ -93,13 +94,15 @@ if __name__ == '__main__':
         # taking a movie if some words exist.
         if watch_flag:
             camera = ExecPicamera(camera_init,param_camera)
-            filename = datetime.today().strftime("%Y%m%d%_H%M%S")
+            filename = datetime.today().strftime("%Y%m%d_%H%M%S")
             camera.take_movie('movie/' + filename + '.h264',
                         param_camera.get('movie_time'))
             conv = subprocess.call(['/usr/bin/MP4Box', '-fps', '20',
                        '-add', 'movie/' + filename + '.h264',
                        'movie/' + filename + '.mp4'])
             post_movie(filename, 'movie/' + filename + '.mp4')
+            rm = subprocess.call(['rm', 'movie/' + filename + '.mp4'])
+            rm2 = subprocess.call(['rm', 'movie/' + filename + '.h264'])
 
         # refresh the connection if time is over.
         if (datetime.now() - tmp_time).total_seconds()\
